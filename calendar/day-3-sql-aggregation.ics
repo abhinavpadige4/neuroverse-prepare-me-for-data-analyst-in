@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-3-sql-aggregation@data-analyst-prep
+DTSTAMP:20260927T000000Z
+DTSTART:20260927T090000Z
+DTEND:20260927T110000Z
+SUMMARY:Study Day 3: SQL Aggregation & Grouping
+DESCRIPTION:Cover GROUP BY, HAVING, aggregate functions, and date functions. Solve 2 practice questions.\n\nTopics:\n- GROUP BY clause\n- HAVING clause for filtering groups\n- Aggregate functions: SUM, AVG, COUNT, MIN, MAX\n- Date functions: DATE_TRUNC, EXTRACT, DATE_PART\n- Combining aggregation with joins\n\nPractice Problems:\n1. Monthly Revenue\n2. Top 5 Customers by Revenue\n\nResources:\n- SQLBolt GROUP BY\n- Mode Analytics Aggregation\n- W3Schools SQL GROUP BY
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 3 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
