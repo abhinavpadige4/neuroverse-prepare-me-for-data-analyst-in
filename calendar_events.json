@@ -1,0 +1,48 @@
+{
+  "calendar": "Data Analyst Interview Prep - 7 Days",
+  "timezone": "UTC",
+  "events": [
+    {
+      "summary": "Study Day 1: SQL Basics",
+      "start": "2026-09-25T09:00:00Z",
+      "end": "2026-09-25T11:00:00Z",
+      "description": "Cover SQL SELECT, WHERE, ORDER BY, LIMIT. Solve 2 practice questions (0001, 0002). Resources: SQLBolt SELECT, W3Schools WHERE, Mode Analytics SQL Tutorial."
+    },
+    {
+      "summary": "Study Day 2: SQL Joins & Subqueries",
+      "start": "2026-09-26T09:00:00Z",
+      "end": "2026-09-26T11:00:00Z",
+      "description": "Cover INNER, LEFT, RIGHT, FULL joins and subqueries. Solve 2 practice questions (0003, 0004). Resources: SQL Joins Visualizer, Mode Analytics Joins, W3Schools Subqueries."
+    },
+    {
+      "summary": "Study Day 3: SQL Aggregation & Window Functions",
+      "start": "2026-09-27T09:00:00Z",
+      "end": "2026-09-27T11:00:00Z",
+      "description": "Cover GROUP BY, HAVING, aggregate functions, window functions, CTEs. Solve 2 practice questions (0005, 0006). Resources: Mode Analytics Aggregation, Mode Window Functions, LeetCode SQL 50."
+    },
+    {
+      "summary": "Study Day 4: Python Pandas Fundamentals",
+      "start": "2026-09-28T09:00:00Z",
+      "end": "2026-09-28T11:00:00Z",
+      "description": "Cover Series/DataFrame, CSV loading, filtering, boolean indexing. Solve 2 practice questions (0007, 0008). Resources: Pandas User Guide, Pandas 10 Minutes, Kaggle Pandas."
+    },
+    {
+      "summary": "Study Day 5: Data Cleaning & Manipulation",
+      "start": "2026-09-29T09:00:00Z",
+      "end": "2026-09-29T11:00:00Z",
+      "description": "Cover missing values, duplicates, type conversion, merging. Solve 2 practice questions (0009, 0010). Resources: Pandas Missing Data, Pandas Merge, Real Python Data Cleaning."
+    },
+    {
+      "summary": "Study Day 6: Data Visualization",
+      "start": "2026-09-30T09:00:00Z",
+      "end": "2026-09-30T11:00:00Z",
+      "description": "Cover matplotlib, seaborn, plot best practices. Solve 2 practice questions (0011, 0012). Resources: Matplotlib Gallery, Seaborn Tutorial, Plotly Python."
+    },
+    {
+      "summary": "Study Day 7: Statistics & A/B Testing",
+      "start": "2026-10-01T09:00:00Z",
+      "end": "2026-10-01T11:00:00Z",
+      "description": "Cover descriptive stats, hypothesis testing, A/B testing, SQL from Python. Solve 3 practice questions (0013, 0014, 0015). Resources: A/B Testing Wikipedia, SciPy Stats, Statsmodels."
+    }
+  ]
+}
