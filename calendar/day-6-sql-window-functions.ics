@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-6-sql-window-functions@data-analyst-prep
+DTSTAMP:20260930T000000Z
+DTSTART:20260930T090000Z
+DTEND:20260930T110000Z
+SUMMARY:Study Day 6: SQL Window Functions & Advanced Analytics
+DESCRIPTION:Cover window functions (ROW_NUMBER, RANK, LAG, LEAD), CTEs, and cohort analysis. Solve 2 practice questions.\n\nTopics:\n- Window functions: ROW_NUMBER, RANK, DENSE_RANK\n- LAG and LEAD for previous/next row values\n- Running totals with SUM() OVER()\n- Common Table Expressions (CTEs)\n- Cohort analysis\n\nPractice Problems:\n1. Running Total & Rank with Window Functions\n2. Cohort Retention Analysis with CTEs\n\nResources:\n- Mode Analytics Window Functions\n- SQLBolt Window Functions\n- Use The Index Window Functions
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 6 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
