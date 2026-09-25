@@ -1,75 +1,72 @@
 """
-Problem 0002 - SQL: Count Orders Per Status
-===========================================
-Day 1 - SQL Fundamentals (GROUP BY, COUNT)
+Day 1 - SQL Basics
+Problem 2: Count Orders Per Status
+===================================
+Description:
+    Write a SQL query to count the number of orders per status
+    in the `orders` table.
 
-Problem
--------
-Given an `orders` table with columns (order_id, customer_id, status, order_date, total),
-write a SQL query to count the number of orders per status.
-
-Solution
---------
-    SELECT status, COUNT(*) AS order_count
-    FROM orders
-    GROUP BY status
-    ORDER BY order_count DESC;
-
-Notes
------
-- GROUP BY collapses rows that share the same status into a single row.
-- COUNT(*) counts all rows in each group (including NULLs).
-- COUNT(order_id) would skip NULL order_ids.
-
-Complexity
-----------
-- Time:  O(n)  -- single pass with hash aggregation
-- Space: O(k)  -- k = number of distinct statuses
-
-Variant: include statuses with zero orders (using a reference table):
-    SELECT s.status, COUNT(o.order_id) AS order_count
-    FROM statuses s
-    LEFT JOIN orders o ON o.status = s.status
-    GROUP BY s.status;
-"""
-
-import sqlite3
-
-def setup_demo_db(conn: sqlite3.Connection) -> None:
-    conn.executescript(
-        """
-        DROP TABLE IF EXISTS orders;
-        CREATE TABLE orders (
-            order_id    INTEGER PRIMARY KEY,
-            customer_id INTEGER,
-            status      TEXT,
-            order_date  TEXT,
-            total       REAL
-        );
-        INSERT INTO orders (customer_id, status, order_date, total) VALUES
-            (1, 'completed', '2026-09-01', 120.00),
-            (2, 'pending',   '2026-09-02',  45.50),
-            (1, 'completed', '2026-09-03',  88.00),
-            (3, 'cancelled', '2026-09-04',  30.00),
-            (2, 'completed', '2026-09-05', 210.00),
-            (4, 'pending',   '2026-09-06',  65.00),
-            (5, 'completed', '2026-09-07',  99.99),
-            (3, 'cancelled', '2026-09-08',  12.00);
-        """
+Assumed schema:
+    orders (
+        order_id    INT PRIMARY KEY,
+        customer_id INT,
+        status      VARCHAR,   -- e.g. 'pending', 'shipped', 'delivered', 'cancelled'
+        order_date  DATE,
+        amount      DECIMAL(10,2)
     )
 
-def orders_per_status(conn: sqlite3.Connection):
-    query = """
-        SELECT status, COUNT(*) AS order_count
-        FROM orders
-        GROUP BY status
-        ORDER BY order_count DESC;
+Solution:
+    GROUP BY status and use COUNT(*) to count rows per group.
+
+Complexity:
+    Time:  O(n)   -- single pass with hash aggregation
+    Space: O(k)   -- k = number of distinct statuses
+
+SQL:
+    SELECT status,
+           COUNT(*) AS order_count
+    FROM   orders
+    GROUP  BY status
+    ORDER  BY order_count DESC;
+
+Notes:
+    - COUNT(*) counts all rows including NULLs; COUNT(status)
+      would skip NULL statuses.
+    - ORDER BY order_count DESC puts the most common status first.
+"""
+
+import pandas as pd
+
+
+def count_orders_per_status(orders_df: pd.DataFrame) -> pd.DataFrame:
+    """Return the number of orders per status.
+
+    Args:
+        orders_df: DataFrame with an 'orders' column.
+
+    Returns:
+        DataFrame with columns [status, order_count], sorted
+        descending by order_count.
     """
-    return conn.execute(query).fetchall()
+    result = (
+        orders_df.groupby("status", dropna=False)
+        .size()
+        .reset_index(name="order_count")
+        .sort_values("order_count", ascending=False)
+    )
+    return result
+
 
 if __name__ == "__main__":
-    conn = sqlite3.connect(":memory:")
-    setup_demo_db(conn)
-    for row in orders_per_status(conn):
-        print(row)
-    conn.close()
+    sample = pd.DataFrame(
+        {
+            "order_id": list(range(1, 11)),
+            "customer_id": [1, 1, 2, 2, 3, 3, 4, 5, 5, 6],
+            "status": ["pending", "shipped", "delivered", "pending",
+                       "cancelled", "delivered", "shipped", "pending",
+                       "delivered", "cancelled"],
+            "order_date": pd.date_range("2026-01-01", periods=10),
+            "amount": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+        }
+    )
+    print(count_orders_per_status(sample))
