@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-7-statistics-ab-testing@data-analyst-prep
+DTSTAMP:20261001T000000Z
+DTSTART:20261001T090000Z
+DTEND:20261001T110000Z
+SUMMARY:Study Day 7: Statistics & A/B Testing
+DESCRIPTION:Cover descriptive statistics, hypothesis testing, A/B testing, and funnel analysis. Solve 3 practice questions.\n\nTopics:\n- Descriptive statistics: mean, median, mode, std, variance\n- Hypothesis testing: null and alternative hypotheses\n- A/B testing: two-proportion z-test\n- Funnel analysis: conversion rates between steps\n- Data profiling and outlier detection\n\nPractice Problems:\n1. A/B Test with Hypothesis Testing\n2. Descriptive Statistics & Data Profiling\n3. Funnel Analysis (SQL + Python)\n\nResources:\n- Khan Academy Statistics\n- StatQuest A/B Testing\n- Evan Miller Sample Size for A/B Tests
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 7 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
