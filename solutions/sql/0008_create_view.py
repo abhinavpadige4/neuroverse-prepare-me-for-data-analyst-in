@@ -1,393 +1,347 @@
 """
 SQL Q8: Create a View
-======================
+=====================
+Objective: Learn how to create, query, and manage SQL views.
 
-Problem:
---------
-Given a table `employees` with columns (id, name, department, salary, hire_date),
-create a view called `high_earners` that shows employees earning above the
-average salary, displaying only name, department, and salary.
+A VIEW is a virtual table defined by a SELECT query. It does not store data
+physically; instead, it runs the underlying query each time it is referenced.
 
-Also create a second view `dept_summary` that shows department-level
-aggregations (employee count, avg salary, max salary) for departments
-with more than 2 employees.
+Use cases:
+  - Simplify complex queries
+  - Restrict access to sensitive columns
+  - Provide a stable interface over changing schemas
 
-Learning Objectives:
-- CREATE VIEW syntax and usage
-- Views vs tables (virtual vs physical)
-- Querying views like tables
-- DROP VIEW
-- Views with JOINs and aggregations
-- Performance considerations
-
-Difficulty: Medium
-Estimated Time: 20 minutes
+Prerequisites: SQLite3 (built-in Python module)
 """
 
 import sqlite3
 import os
-import sys
+import tempfile
 
 
 def setup_database(db_path: str) -> sqlite3.Connection:
-    """Create and populate the sample database."""
-    if os.path.exists(db_path):
-        os.remove(db_path)
-
+    """Create a sample database with employees and departments tables."""
     conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    # Create the employees table
-    cursor.execute("""
-        CREATE TABLE employees (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            department TEXT NOT NULL,
-            salary REAL NOT NULL,
-            hire_date TEXT NOT NULL
+    cur.execute("""
+        CREATE TABLE departments (
+            dept_id   INTEGER PRIMARY KEY,
+            dept_name TEXT NOT NULL
         )
     """)
 
-    # Insert sample data
-    employees_data = [
-        (1, "Alice Johnson", "Engineering", 95000, "2019-03-15"),
-        (2, "Bob Smith", "Engineering", 88000, "2020-01-10"),
-        (3, "Carol White", "Marketing", 72000, "2018-06-20"),
-        (4, "David Brown", "Marketing", 68000, "2021-02-28"),
-        (5, "Eve Davis", "Engineering", 105000, "2017-11-05"),
-        (6, "Frank Miller", "Sales", 62000, "2022-04-12"),
-        (7, "Grace Lee", "Sales", 78000, "2019-08-30"),
-        (8, "Henry Wilson", "Engineering", 92000, "2020-07-22"),
-        (9, "Ivy Chen", "Marketing", 81000, "2018-09-14"),
-        (10, "Jack Taylor", "Sales", 55000, "2023-01-05"),
-        (11, "Karen Adams", "Engineering", 110000, "2016-05-18"),
-        (12, "Leo Martinez", "Sales", 71000, "2021-10-09"),
-    ]
+    cur.execute("""
+        CREATE TABLE employees (
+            emp_id    INTEGER PRIMARY KEY,
+            name      TEXT NOT NULL,
+            dept_id   INTEGER NOT NULL,
+            salary    REAL NOT NULL,
+            hire_date TEXT NOT NULL,
+            FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+        )
+    """)
 
-    cursor.executemany(
-        "INSERT INTO employees (id, name, department, salary, hire_date) VALUES (?, ?, ?, ?, ?)",
-        employees_data
+    departments = [
+        (1, 'Engineering'),
+        (2, 'Marketing'),
+        (3, 'Sales'),
+        (4, 'Finance'),
+    ]
+    cur.executemany("INSERT INTO departments VALUES (?, ?)", departments)
+
+    employees = [
+        (1, 'Alice',   1, 95000, '2020-03-15'),
+        (2, 'Bob',     1, 88000, '2019-07-01'),
+        (3, 'Charlie', 2, 72000, '2021-01-10'),
+        (4, 'Diana',   2, 68000, '2022-05-20'),
+        (5, 'Eve',     3, 78000, '2018-11-05'),
+        (6, 'Frank',   3, 82000, '2020-09-12'),
+        (7, 'Grace',   4, 91000, '2017-04-22'),
+        (8, 'Hank',    4, 85000, '2021-08-30'),
+        (9, 'Ivy',     1, 102000, '2016-06-18'),
+        (10, 'Jack',   2, 65000, '2023-02-14'),
+    ]
+    cur.executemany(
+        "INSERT INTO employees VALUES (?, ?, ?, ?, ?)", employees
     )
 
     conn.commit()
     return conn
 
 
-def create_high_earners_view(conn: sqlite3.Connection) -> None:
-    """
-    Solution Part 1: Create a view for high earners.
+def create_views(conn: sqlite3.Connection) -> None:
+    """Create multiple views demonstrating different patterns."""
+    cur = conn.cursor()
 
-    A view is a virtual table defined by a SELECT query.
-    It doesn't store data physically — it's computed on each access.
-    """
-    cursor = conn.cursor()
-
-    # Drop the view if it already exists (for idempotency)
-    cursor.execute("DROP VIEW IF EXISTS high_earners")
-
-    # Create the view
-    cursor.execute("""
-        CREATE VIEW high_earners AS
+    # View 1: Basic view — join employees with departments
+    cur.execute("""
+        CREATE VIEW IF NOT EXISTS v_employee_details AS
         SELECT
-            name,
-            department,
-            salary
-        FROM employees
-        WHERE salary > (
-            SELECT AVG(salary)
-            FROM employees
-        )
-    """)
-
-    conn.commit()
-    print("[OK] View 'high_earners' created successfully.")
-
-
-def create_dept_summary_view(conn: sqlite3.Connection) -> None:
-    """
-    Solution Part 2: Create a department summary view with aggregations.
-
-    Demonstrates that views can contain GROUP BY, HAVING, and expressions.
-    """
-    cursor = conn.cursor()
-
-    cursor.execute("DROP VIEW IF EXISTS dept_summary")
-
-    cursor.execute("""
-        CREATE VIEW dept_summary AS
-        SELECT
-            department,
-            COUNT(*) AS employee_count,
-            ROUND(AVG(salary), 2) AS avg_salary,
-            MAX(salary) AS max_salary,
-            MIN(salary) AS min_salary
-        FROM employees
-        GROUP BY department
-        HAVING COUNT(*) > 2
-    """)
-
-    conn.commit()
-    print("[OK] View 'dept_summary' created successfully.")
-
-
-def create_view_with_join(conn: sqlite3.Connection) -> None:
-    """
-    Solution Part 3: Create a view that joins with another table.
-
-    Demonstrates views can encapsulate complex JOIN logic.
-    """
-    cursor = conn.cursor()
-
-    # Create a departments reference table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS departments (
-            dept_name TEXT PRIMARY KEY,
-            location TEXT NOT NULL,
-            budget REAL NOT NULL
-        )
-    """)
-
-    cursor.executemany(
-        "INSERT OR REPLACE INTO departments (dept_name, location, budget) VALUES (?, ?, ?)",
-        [
-            ("Engineering", "Building A", 500000),
-            ("Marketing", "Building B", 200000),
-            ("Sales", "Building C", 300000),
-        ]
-    )
-
-    cursor.execute("DROP VIEW IF EXISTS employee_dept_details")
-
-    cursor.execute("""
-        CREATE VIEW employee_dept_details AS
-        SELECT
-            e.name,
-            e.department,
+            e.emp_id,
+            e.name       AS employee_name,
+            d.dept_name  AS department,
             e.salary,
-            d.location,
-            d.budget,
-            ROUND(e.salary * 100.0 / d.budget, 2) AS salary_pct_of_budget
+            e.hire_date
         FROM employees e
-        INNER JOIN departments d ON e.department = d.dept_name
+        JOIN departments d ON e.dept_id = d.dept_id
+    """)
+
+    # View 2: Aggregated view — department-level summary
+    cur.execute("""
+        CREATE VIEW IF NOT EXISTS v_dept_summary AS
+        SELECT
+            d.dept_name,
+            COUNT(e.emp_id)   AS headcount,
+            ROUND(AVG(e.salary), 2) AS avg_salary,
+            MIN(e.salary)     AS min_salary,
+            MAX(e.salary)     AS max_salary
+        FROM departments d
+        LEFT JOIN employees e ON d.dept_id = e.dept_id
+        GROUP BY d.dept_id, d.dept_name
+    """)
+
+    # View 3: Filtered view — high earners only
+    cur.execute("""
+        CREATE VIEW IF NOT EXISTS v_high_earners AS
+        SELECT
+            e.emp_id,
+            e.name       AS employee_name,
+            d.dept_name  AS department,
+            e.salary,
+            e.hire_date
+        FROM employees e
+        JOIN departments d ON e.dept_id = d.dept_id
+        WHERE e.salary >= 85000
+    """)
+
+    # View 4: Computed column view — tenure in years
+    cur.execute("""
+        CREATE VIEW IF NOT EXISTS v_tenure AS
+        SELECT
+            e.emp_id,
+            e.name       AS employee_name,
+            d.dept_name  AS department,
+            e.hire_date,
+            ROUND(
+                (julianday('now') - julianday(e.hire_date)) / 365.25,
+                1
+            ) AS years_of_service
+        FROM employees e
+        JOIN departments d ON e.dept_id = d.dept_id
     """)
 
     conn.commit()
-    print("[OK] View 'employee_dept_details' created successfully.")
 
 
 def query_views(conn: sqlite3.Connection) -> None:
-    """Demonstrate querying views like regular tables."""
-    cursor = conn.cursor()
+    """Demonstrate querying each view and printing results."""
+    cur = conn.cursor()
 
-    print("\n" + "=" * 60)
-    print("QUERYING VIEWS")
-    print("=" * 60)
+    print("=" * 70)
+    print("VIEW 1: v_employee_details — Full employee-department join")
+    print("=" * 70)
+    cur.execute("SELECT * FROM v_employee_details ORDER BY emp_id")
+    rows = cur.fetchall()
+    header = f"{'ID':<4} {'Name':<10} {'Department':<14} {'Salary':>10} {'Hire Date':<12}"
+    print(header)
+    print("-" * 70)
+    for r in rows:
+        print(f"{r['emp_id']:<4} {r['employee_name']:<10} {r['department']:<14} {r['salary']:>10,.0f} {r['hire_date']:<12}")
+    print(f"\nTotal rows: {len(rows)}\n")
 
-    # Query high_earners view
-    print("\n--- High Earners (above average salary) ---")
-    cursor.execute("SELECT * FROM high_earners ORDER BY salary DESC")
-    rows = cursor.fetchall()
-    print(f"{'Name':<20} {'Department':<15} {'Salary':>10}")
-    print("-" * 47)
-    for row in rows:
-        print(f"{row[0]:<20} {row[1]:<15} ${row[2]:>9,.0f}")
-    print(f"\nTotal high earners: {len(rows)}")
+    print("=" * 70)
+    print("VIEW 2: v_dept_summary — Department-level aggregation")
+    print("=" * 70)
+    cur.execute("SELECT * FROM v_dept_summary ORDER BY avg_salary DESC")
+    rows = cur.fetchall()
+    header = f"{'Department':<14} {'Headcount':>9} {'Avg Salary':>12} {'Min Salary':>12} {'Max Salary':>12}"
+    print(header)
+    print("-" * 70)
+    for r in rows:
+        print(f"{r['dept_name']:<14} {r['headcount']:>9} {r['avg_salary']:>12,.2f} {r['min_salary']:>12,.0f} {r['max_salary']:>12,.0f}")
+    print()
 
-    # Query dept_summary view
-    print("\n--- Department Summary (departments with >2 employees) ---")
-    cursor.execute("SELECT * FROM dept_summary ORDER BY avg_salary DESC")
-    rows = cursor.fetchall()
-    print(f"{'Department':<15} {'Count':>6} {'Avg Salary':>12} {'Max Salary':>12} {'Min Salary':>12}")
-    print("-" * 60)
-    for row in rows:
-        print(f"{row[0]:<15} {row[1]:>6} ${row[2]:>10,.2f} ${row[3]:>10,.0f} ${row[4]:>10,.0f}")
+    print("=" * 70)
+    print("VIEW 3: v_high_earners — Employees earning >= $85,000")
+    print("=" * 70)
+    cur.execute("SELECT * FROM v_high_earners ORDER BY salary DESC")
+    rows = cur.fetchall()
+    header = f"{'ID':<4} {'Name':<10} {'Department':<14} {'Salary':>10} {'Hire Date':<12}"
+    print(header)
+    print("-" * 70)
+    for r in rows:
+        print(f"{r['emp_id']:<4} {r['employee_name']:<10} {r['department']:<14} {r['salary']:>10,.0f} {r['hire_date']:<12}")
+    print(f"\nTotal high earners: {len(rows)}\n")
 
-    # Query the join view
-    print("\n--- Employee Department Details (top 5 by salary) ---")
-    cursor.execute("""
-        SELECT name, department, salary, location, salary_pct_of_budget
-        FROM employee_dept_details
-        ORDER BY salary DESC
-        LIMIT 5
-    """)
-    rows = cursor.fetchall()
-    print(f"{'Name':<18} {'Dept':<14} {'Salary':>10} {'Location':<12} {'% Budget':>9}")
-    print("-" * 66)
-    for row in rows:
-        print(f"{row[0]:<18} {row[1]:<14} ${row[2]:>9,.0f} {row[3]:<12} {row[4]:>8.2f}%")
-
-    # Demonstrate filtering a view
-    print("\n--- High Earners in Engineering Only ---")
-    cursor.execute("""
-        SELECT name, salary
-        FROM high_earners
-        WHERE department = 'Engineering'
-        ORDER BY salary DESC
-    """)
-    rows = cursor.fetchall()
-    for row in rows:
-        print(f"  {row[0]}: ${row[1]:,.0f}")
+    print("=" * 70)
+    print("VIEW 4: v_tenure — Employees with computed tenure")
+    print("=" * 70)
+    cur.execute("SELECT * FROM v_tenure ORDER BY years_of_service DESC")
+    rows = cur.fetchall()
+    header = f"{'ID':<4} {'Name':<10} {'Department':<14} {'Hire Date':<12} {'Years':>6}"
+    print(header)
+    print("-" * 70)
+    for r in rows:
+        print(f"{r['emp_id']:<4} {r['employee_name']:<10} {r['department']:<14} {r['hire_date']:<12} {r['years_of_service']:>6}")
+    print()
 
 
-def verify_views_exist(conn: sqlite3.Connection) -> bool:
-    """Verify that all views were created successfully."""
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT name FROM sqlite_master
+def demonstrate_view_management(conn: sqlite3.Connection) -> None:
+    """Show how to list, drop, and recreate views."""
+    cur = conn.cursor()
+
+    print("=" * 70)
+    print("VIEW MANAGEMENT: Listing all views in the database")
+    print("=" * 70)
+    cur.execute("""
+        SELECT name, sql
+        FROM sqlite_master
         WHERE type = 'view'
         ORDER BY name
     """)
-    views = [row[0] for row in cursor.fetchall()]
-    expected = ["dept_summary", "employee_dept_details", "high_earners"]
+    views = cur.fetchall()
+    for v in views:
+        print(f"\n  View: {v['name']}")
+        print(f"  SQL:  {v['sql'][:100]}..." if len(v['sql']) > 100 else f"  SQL:  {v['sql']}")
+    print(f"\nTotal views: {len(views)}")
 
-    all_present = all(v in views for v in expected)
-    print(f"\nViews in database: {views}")
-    print(f"All expected views present: {all_present}")
-    return all_present
-
-
-def test_view_behavior(conn: sqlite3.Connection) -> bool:
-    """
-    Test that views reflect underlying data changes.
-    Views are virtual — they always show current data.
-    """
-    cursor = conn.cursor()
-
-    # Get initial count from high_earners
-    cursor.execute("SELECT COUNT(*) FROM high_earners")
-    initial_count = cursor.fetchone()[0]
-
-    # Insert a new high earner
-    cursor.execute("""
-        INSERT INTO employees (id, name, department, salary, hire_date)
-        VALUES (13, 'Mia Thompson', 'Engineering', 120000, '2023-06-01')
+    # Drop and recreate a view
+    print("\n" + "=" * 70)
+    print("Dropping and recreating v_high_earners with a new threshold")
+    print("=" * 70)
+    cur.execute("DROP VIEW IF EXISTS v_high_earners")
+    cur.execute("""
+        CREATE VIEW v_high_earners AS
+        SELECT
+            e.emp_id,
+            e.name       AS employee_name,
+            d.dept_name  AS department,
+            e.salary,
+            e.hire_date
+        FROM employees e
+        JOIN departments d ON e.dept_id = d.dept_id
+        WHERE e.salary >= 90000
     """)
     conn.commit()
 
-    # View should now include the new employee
-    cursor.execute("SELECT COUNT(*) FROM high_earners")
-    new_count = cursor.fetchone()[0]
+    cur.execute("SELECT * FROM v_high_earners ORDER BY salary DESC")
+    rows = cur.fetchall()
+    print(f"\nHigh earners (>= $90,000): {len(rows)} employees")
+    for r in rows:
+        print(f"  {r['employee_name']:<10} {r['department']:<14} ${r['salary']:>10,.0f}")
 
-    view_updated = new_count > initial_count
-    print(f"\n[TEST] View reflects data changes: {view_updated}")
-    print(f"  Before insert: {initial_count} high earners")
-    print(f"  After insert:  {new_count} high earners")
 
-    # Verify the new employee appears
-    cursor.execute("""
-        SELECT name FROM high_earners WHERE name = 'Mia Thompson'
-    """)
-    found = cursor.fetchone() is not None
-    print(f"  New employee visible in view: {found}")
+def run_tests(conn: sqlite3.Connection) -> bool:
+    """Run assertions to verify view correctness."""
+    cur = conn.cursor()
+    all_passed = True
 
-    # Clean up
-    cursor.execute("DELETE FROM employees WHERE id = 13")
+    # Test 1: v_employee_details returns all 10 employees
+    cur.execute("SELECT COUNT(*) AS cnt FROM v_employee_details")
+    count = cur.fetchone()['cnt']
+    assert count == 10, f"Expected 10 rows in v_employee_details, got {count}"
+    print("  [PASS] v_employee_details returns 10 rows")
+
+    # Test 2: v_dept_summary has 4 departments
+    cur.execute("SELECT COUNT(*) AS cnt FROM v_dept_summary")
+    count = cur.fetchone()['cnt']
+    assert count == 4, f"Expected 4 rows in v_dept_summary, got {count}"
+    print("  [PASS] v_dept_summary returns 4 departments")
+
+    # Test 3: Engineering headcount is 3
+    cur.execute("SELECT headcount FROM v_dept_summary WHERE dept_name = 'Engineering'")
+    hc = cur.fetchone()['headcount']
+    assert hc == 3, f"Expected Engineering headcount 3, got {hc}"
+    print("  [PASS] Engineering headcount = 3")
+
+    # Test 4: v_high_earners (>= 85000) has 5 employees
+    cur.execute("SELECT COUNT(*) AS cnt FROM v_high_earners")
+    count = cur.fetchone()['cnt']
+    assert count == 5, f"Expected 5 high earners, got {count}"
+    print("  [PASS] v_high_earners returns 5 employees")
+
+    # Test 5: v_tenure has computed years_of_service for all
+    cur.execute("SELECT COUNT(*) AS cnt FROM v_tenure WHERE years_of_service IS NOT NULL")
+    count = cur.fetchone()['cnt']
+    assert count == 10, f"Expected 10 rows with tenure, got {count}"
+    print("  [PASS] v_tenure has computed tenure for all 10 employees")
+
+    # Test 6: Ivy has the highest salary in v_high_earners
+    cur.execute("SELECT employee_name FROM v_high_earners ORDER BY salary DESC LIMIT 1")
+    top = cur.fetchone()['employee_name']
+    assert top == 'Ivy', f"Expected Ivy as top earner, got {top}"
+    print("  [PASS] Ivy is the top earner")
+
+    # Test 7: Views appear in sqlite_master
+    cur.execute("SELECT COUNT(*) AS cnt FROM sqlite_master WHERE type = 'view'")
+    count = cur.fetchone()['cnt']
+    assert count == 4, f"Expected 4 views in sqlite_master, got {count}"
+    print("  [PASS] 4 views registered in sqlite_master")
+
+    # Test 8: View reflects underlying data changes
+    cur.execute("UPDATE employees SET salary = 110000 WHERE emp_id = 1")
+    conn.commit()
+    cur.execute("SELECT salary FROM v_employee_details WHERE emp_id = 1")
+    new_sal = cur.fetchone()['salary']
+    assert new_sal == 110000, f"Expected 110000 after update, got {new_sal}"
+    print("  [PASS] View reflects underlying data changes")
+
+    # Restore
+    cur.execute("UPDATE employees SET salary = 95000 WHERE emp_id = 1")
     conn.commit()
 
-    return view_updated and found
-
-
-def test_view_drop(conn: sqlite3.Connection) -> bool:
-    """Test dropping a view."""
-    cursor = conn.cursor()
-
-    # Create a temporary view
-    cursor.execute("""
-        CREATE VIEW temp_test_view AS
-        SELECT id, name FROM employees WHERE id = 1
-    """)
-    conn.commit()
-
-    # Verify it exists
-    cursor.execute("SELECT COUNT(*) FROM temp_test_view")
-    exists_before = cursor.fetchone()[0] == 1
-
-    # Drop it
-    cursor.execute("DROP VIEW temp_test_view")
-    conn.commit()
-
-    # Verify it's gone
-    try:
-        cursor.execute("SELECT * FROM temp_test_view")
-        exists_after = True
-    except sqlite3.OperationalError:
-        exists_after = False
-
-    test_passed = exists_before and not exists_after
-    print(f"\n[TEST] DROP VIEW works correctly: {test_passed}")
-    return test_passed
-
-
-def run_all_tests(conn: sqlite3.Connection) -> bool:
-    """Run all tests and return overall pass/fail."""
-    print("\n" + "=" * 60)
-    print("RUNNING TESTS")
-    print("=" * 60)
-
-    results = []
-    results.append(verify_views_exist(conn))
-    results.append(test_view_behavior(conn))
-    results.append(test_view_drop(conn))
-
-    all_passed = all(results)
-    print(f"\n{'=' * 60}")
-    print(f"OVERALL: {'ALL TESTS PASSED' if all_passed else 'SOME TESTS FAILED'}")
-    print(f"{'=' * 60}")
+    print(f"\n  All {8} tests passed!")
     return all_passed
 
 
-def cleanup(db_path: str) -> None:
-    """Remove the temporary database file."""
-    if os.path.exists(db_path):
-        os.remove(db_path)
-        print(f"\n[Cleanup] Removed temporary database: {db_path}")
-
-
 def main():
-    """Main entry point."""
-    db_path = "test_views.db"
+    """Main entry point — runs the full exercise."""
+    print("SQL Q8: Create a View")
+    print("=" * 70)
 
-    print("=" * 60)
-    print("SQL Q8: CREATE VIEW - Complete Solution")
-    print("=" * 60)
+    # Use a temp file so the database persists during the session
+    tmp = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+    db_path = tmp.name
+    tmp.close()
 
-    # Setup
-    conn = setup_database(db_path)
-    print("[OK] Database created with sample data.")
+    try:
+        conn = setup_database(db_path)
+        print("\n[1/4] Database created with 4 departments and 10 employees.\n")
 
-    # Create views
-    create_high_earners_view(conn)
-    create_dept_summary_view(conn)
-    create_view_with_join(conn)
+        create_views(conn)
+        print("[2/4] Four views created successfully.\n")
 
-    # Query views
-    query_views(conn)
+        query_views(conn)
 
-    # Run tests
-    all_passed = run_all_tests(conn)
+        demonstrate_view_management(conn)
 
-    # Cleanup
-    conn.close()
-    cleanup(db_path)
+        print("\n" + "=" * 70)
+        print("RUNNING TESTS")
+        print("=" * 70)
+        run_tests(conn)
 
-    # Print key takeaways
-    print("\n" + "=" * 60)
-    print("KEY TAKEAWAYS")
-    print("=" * 60)
+        conn.close()
+    finally:
+        if os.path.exists(db_path):
+            os.unlink(db_path)
+
+    print("\n" + "=" * 70)
+    print("EXERCISE COMPLETE")
+    print("=" * 70)
     print("""
-1. CREATE VIEW defines a virtual table from a SELECT query.
-2. Views don't store data — they compute results on access.
-3. Views always reflect current underlying data.
-4. Views can contain JOINs, aggregations, subqueries.
-5. Use DROP VIEW IF EXISTS for idempotent scripts.
-6. Views simplify complex queries for consumers.
-7. Views can be used in WHERE clauses of other queries.
-8. Performance: views add a layer of indirection;
-   materialized views (not in SQLite) cache results.
+Key takeaways:
+  1. CREATE VIEW defines a virtual table from a SELECT query.
+  2. Views do NOT store data — they execute the query on each access.
+  3. Views simplify complex joins and aggregations.
+  4. Views can restrict column access (security benefit).
+  5. DROP VIEW removes the definition; data in base tables is unaffected.
+  6. Views reflect real-time changes in underlying tables.
+  7. Use IF NOT EXISTS to avoid errors on repeated creation.
+  8. sqlite_master catalogs all views with their SQL definitions.
 """)
 
-    return 0 if all_passed else 1
 
-
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__ == '__main__':
+    main()
