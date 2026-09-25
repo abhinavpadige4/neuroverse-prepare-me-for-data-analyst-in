@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-1-sql-basics@data-analyst-prep
+DTSTAMP:20260925T000000Z
+DTSTART:20260925T090000Z
+DTEND:20260925T110000Z
+SUMMARY:Study Day 1: SQL Basics
+DESCRIPTION:Cover SQL SELECT, WHERE, ORDER BY, LIMIT. Solve 2 practice questions.\n\nTopics:\n- SELECT statement and column selection\n- WHERE clause for filtering rows\n- ORDER BY for sorting results\n- LIMIT for restricting result count\n\nPractice Problems:\n1. Top 10 Highest Paid Employees\n2. Count Orders Per Status\n\nResources:\n- SQLBolt SELECT Queries\n- W3Schools SQL WHERE\n- Mode Analytics SQL Tutorial
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 1 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
