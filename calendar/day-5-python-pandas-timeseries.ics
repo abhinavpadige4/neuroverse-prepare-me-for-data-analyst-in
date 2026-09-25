@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-5-python-pandas-timeseries@data-analyst-prep
+DTSTAMP:20260929T000000Z
+DTSTART:20260929T090000Z
+DTEND:20260929T110000Z
+SUMMARY:Study Day 5: Python Pandas Time Series & Cleaning
+DESCRIPTION:Cover datetime handling, resampling, rolling windows, and data cleaning. Solve 2 practice questions.\n\nTopics:\n- Datetime handling and conversion\n- Resampling time series data\n- Rolling windows and moving averages\n- Data cleaning: missing values, duplicates, outliers\n- String manipulation and validation\n\nPractice Problems:\n1. Daily Revenue Time Series\n2. Data Cleaning Pipeline\n\nResources:\n- Pandas Time Series Guide\n- Pandas Missing Data\n- Kaggle Data Cleaning
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 5 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
