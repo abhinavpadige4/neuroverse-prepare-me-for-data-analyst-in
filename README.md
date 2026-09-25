@@ -1,210 +1,151 @@
 # Data Analyst Interview Prep — 7-Day Sprint
 
-## Overview
+A focused 7-day study plan to prepare for a Data Analyst interview. Includes:
 
-This repository is a structured 7-day preparation plan for Data Analyst interviews. It includes:
-- A daily schedule with focused topics
-- 15 practice questions (8 SQL + 7 Python/Pandas) with full solutions
-- Curated resources with URLs
-- Notion page templates and Calendar event descriptions
-
-All solutions live under `solutions/sql/` and `solutions/pandas/`.
+- **Daily schedule** with topics, exercises, and curated resources
+- **15 SQL & Python practice problems** with complete, runnable solutions
+- **Notion page templates** (one per day) — see [`notion/`](./notion/)
+- **Calendar events** (ICS file) — see [`calendar/data-analyst-prep.ics`](./calendar/data-analyst-prep.ics)
 
 ---
 
-## 7-Day Schedule
+## 📅 7-Day Schedule
+
+| Day | Date | Focus | Exercises |
+|-----|------|-------|-----------|
+| 1 | 2026-09-25 | SQL Fundamentals: SELECT, WHERE, ORDER BY, LIMIT | 0001, 0002 |
+| 2 | 2026-09-26 | SQL Joins & Subqueries | 0003, 0004, 0005 |
+| 3 | 2026-09-27 | SQL Window Functions, Dates, CASE WHEN | 0006, 0007, 0008, 0009 |
+| 4 | 2026-09-28 | Python for Data Analysis: NumPy, Pandas basics | 0010 |
+| 5 | 2026-09-29 | Pandas GroupBy, Merge, Reshaping | 0011, 0012 |
+| 6 | 2026-09-30 | Data Visualization & Statistics | 0013, 0014 |
+| 7 | 2026-10-01 | SQL ↔ Pandas Equivalents & Mock Interview | 0015 |
+
+---
+
+## 🧩 Practice Problems (15 total)
+
+### SQL (9 problems)
+
+| # | File | Topic |
+|---|------|-------|
+| 0001 | [`solutions/0001_sql_top10_salary.py`](./solutions/0001_sql_top10_salary.py) | Top-N with ORDER BY + LIMIT |
+| 0002 | [`solutions/0002_sql_order_status_count.py`](./solutions/0002_sql_order_status_count.py) | GROUP BY + COUNT |
+| 0003 | [`solutions/0003_sql_dept_emp_count.py`](./solutions/0003_sql_dept_emp_count.py) | INNER JOIN + aggregation |
+| 0004 | [`solutions/0004_sql_employees_no_orders.py`](./solutions/0004_sql_employees_no_orders.py) | LEFT JOIN + IS NULL (anti-join) |
+| 0005 | [`solutions/0005_sql_avg_salary_above.py`](./solutions/0005_sql_avg_salary_above.py) | Subqueries & correlated subqueries |
+| 0006 | [`solutions/0006_row_number_dept.py`](./solutions/0006_row_number_dept.py) | ROW_NUMBER / RANK / DENSE_RANK |
+| 0007 | [`solutions/0007_running_total_sales.py`](./solutions/0007_running_total_sales.py) | Running totals with window functions |
+| 0008 | [`solutions/0008_sql_date_range.py`](./solutions/0008_sql_date_range.py) | Date filtering with BETWEEN |
+| 0009 | [`solutions/0009_sql_case_when.py`](./solutions/0009_sql_case_when.py) | CASE WHEN bucketing |
+
+### Python / Pandas (6 problems)
+
+| # | File | Topic |
+|---|------|-------|
+| 0010 | [`solutions/0010_fill_missing_mean.py`](./solutions/0010_fill_missing_mean.py) | Missing data imputation |
+| 0011 | [`solutions/0011_merge_left.py`](./solutions/0011_merge_left.py) | Pandas merge (LEFT JOIN) |
+| 0012 | [`solutions/0012_python_groupby.py`](./solutions/0012_python_groupby.py) | GroupBy aggregation |
+| 0013 | [`solutions/0013_line_plot_sales.py`](./solutions/0013_line_plot_sales.py) | Matplotlib line chart |
+| 0014 | [`solutions/0014_python_ab_test.py`](./solutions/0014_python_ab_test.py) | Two-proportion z-test (A/B testing) |
+| 0015 | [`solutions/0015_python_sql_join.py`](./solutions/0015_python_sql_join.py) | Pandas merge ↔ SQL JOIN |
+
+---
+
+## 📚 Resources by Day
 
 ### Day 1 — SQL Fundamentals
-**Topics:** SELECT, WHERE, ORDER BY, LIMIT, DISTINCT, basic aggregations (COUNT, SUM, AVG, MIN, MAX), GROUP BY, HAVING
-**Practice:** Q1 (select_basic), Q2 (second_highest_salary), Q3 (group_by_aggregation)
-**Goal:** Write clean SELECT queries with filtering, sorting, and aggregation.
+- [SQLBolt — SELECT queries](https://sqlbolt.com/lesson/select_queries_introduction)
+- [W3Schools — SQL WHERE](https://www.w3schools.com/sql/sql_where.asp)
+- [Mode Analytics — SQL Tutorial](https://mode.com/sql-tutorial/)
 
 ### Day 2 — SQL Joins & Subqueries
-**Topics:** INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN, subqueries, EXISTS, IN
-**Practice:** Q4 (inner_join), Q6 (self_join)
-**Goal:** Join multiple tables confidently; understand self-joins for hierarchical data.
+- [SQL Joins Visualizer](https://www.sqljoins.com/)
+- [Mode Analytics — SQL Joins](https://mode.com/sql-tutorial/sql-joins/)
+- [W3Schools — SQL Subqueries](https://www.w3schools.com/sql/sql_subqueries.asp)
 
-### Day 3 — Advanced SQL & Window Functions
-**Topics:** CTEs (WITH), window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD), running totals, moving averages
-**Practice:** Q5 (cte_running_total), Q7 (window_moving_avg)
-**Goal:** Use CTEs for readability; apply window functions for analytics.
+### Day 3 — Window Functions, Dates, CASE
+- [Mode Analytics — Window Functions](https://mode.com/sql-tutorial/sql-window-functions/)
+- [SQLBolt — Window Functions](https://sqlbolt.com/lesson/window_functions_introduction)
+- [W3Schools — SQL CASE](https://www.w3schools.com/sql/sql_case.asp)
 
-### Day 4 — SQL Views & Schema Design
-**Topics:** CREATE VIEW, CREATE TABLE, data types, constraints, normalization basics
-**Practice:** Q8 (create_view)
-**Goal:** Create reusable views; understand basic schema design.
+### Day 4 — Python for Data Analysis
+- [NumPy Quickstart](https://numpy.org/doc/stable/user/quickstart.html)
+- [Pandas User Guide — Getting Started](https://pandas.pydata.org/docs/getting_started/intro_tutorials/)
+- [Real Python — Pandas Tutorial](https://realpython.com/pandas-basics/)
 
-### Day 5 — Python/Pandas Fundamentals
-**Topics:** Series, DataFrame, dtypes, missing data, basic operations, string methods
-**Practice:** Q9 (sum_even), Q10 (char_frequency), Q11 (load_clean_shape)
-**Goal:** Manipulate DataFrames fluently; handle missing data.
+### Day 5 — Pandas GroupBy & Merge
+- [Pandas — GroupBy](https://pandas.pydata.org/docs/user_guide/groupby.html)
+- [Pandas — Merging DataFrames](https://pandas.pydata.org/docs/user_guide/merging.html)
+- [Real Python — Pandas Merge](https://realpython.com/pandas-merge-join-concat/)
 
-### Day 6 — Pandas Aggregation & Time Series
-**Topics:** groupby, agg, pivot_table, datetime handling, resample, rolling
-**Practice:** Q12 (filter_mean), Q13 (groupby_agg_sort), Q14 (datetime_resample)
-**Goal:** Perform grouped aggregations and time-series analysis.
+### Day 6 — Visualization & Statistics
+- [Matplotlib Quickstart](https://matplotlib.org/stable/getting_started/index.html)
+- [Seaborn Tutorial](https://seaborn.pydata.org/tutorial.html)
+- [Khan Academy — A/B Testing](https://www.khanacademy.org/math/statistics-probability/comparing-groups-of-populations/ab-testing)
 
-### Day 7 — Visualization & Mock Interview
-**Topics:** matplotlib/seaborn basics, scatter plots, trendlines, storytelling with data
-**Practice:** Q15 (scatter_trendline)
-**Goal:** Create publication-quality charts; run a full mock interview.
-
----
-
-## Practice Questions
-
-### SQL Questions (Q1–Q8)
-
-| # | File | Topic | Difficulty |
-|---|------|-------|------------|
-| Q1 | `solutions/sql/0001_select_basic.py` | SELECT, WHERE, ORDER BY | Easy |
-| Q2 | `solutions/sql/0002_second_highest_salary.py` | Subquery, DISTINCT | Medium |
-| Q3 | `solutions/sql/0003_group_by_aggregation.py` | GROUP BY, HAVING, aggregations | Medium |
-| Q4 | `solutions/sql/0004_inner_join.py` | INNER JOIN | Easy |
-| Q5 | `solutions/sql/0005_cte_running_total.py` | CTE, SUM() OVER() | Medium |
-| Q6 | `solutions/sql/0006_self_join.py` | Self JOIN | Medium |
-| Q7 | `solutions/sql/0007_window_moving_avg.py` | Window functions, AVG() OVER() | Hard |
-| Q8 | `solutions/sql/0008_create_view.py` | CREATE VIEW | Easy |
-
-### Python/Pandas Questions (Q9–Q15)
-
-| # | File | Topic | Difficulty |
-|---|------|-------|------------|
-| Q9 | `solutions/pandas/0001_sum_even.py` | Series filtering, sum | Easy |
-| Q10 | `solutions/pandas/0002_char_frequency.py` | String methods, value_counts | Easy |
-| Q11 | `solutions/pandas/0003_load_clean_shape.py` | read_csv, dropna, shape | Easy |
-| Q12 | `solutions/pandas/0004_filter_mean.py` | Boolean indexing, mean | Medium |
-| Q13 | `solutions/pandas/0005_groupby_agg_sort.py` | groupby, agg, sort_values | Medium |
-| Q14 | `solutions/pandas/0006_datetime_resample.py` | to_datetime, resample | Hard |
-| Q15 | `solutions/pandas/0007_scatter_trendline.py` | matplotlib, scatter, polyfit | Medium |
+### Day 7 — SQL ↔ Pandas & Mock Interview
+- [Pandas — SQL Queries with Pandas](https://pandas.pydata.org/docs/user_guide/sql.html)
+- [DataLemur — SQL Interview Questions](https://www.datalemur.com/)
+- [StrataScratch — Data Analyst Interview Prep](https://www.stratascratch.com/interview-prep)
 
 ---
 
-## Resources
-
-### SQL
-- SQLZoo Interactive Exercises: https://sqlzoo.net/
-- LeetCode SQL Problems: https://leetcode.com/problemset/database/
-- Mode SQL Tutorial: https://mode.com/sql-tutorial/
-- PostgreSQL Documentation: https://www.postgresql.org/docs/current/tutorial.html
-- Window Functions Guide: https://www.postgresql.org/docs/current/functions-window.html
-
-### Python / Pandas
-- Pandas Official Documentation: https://pandas.pydata.org/docs/
-- Pandas Cheat Sheet: https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf
-- Kaggle Pandas Course: https://www.kaggle.com/learn/pandas
-- DataCamp Pandas Track: https://www.datacamp.com/learn/python/pandas
-- Python for Data Analysis (Wes McKinney): https://www.oreilly.com/library/view/python-for-data/9781491912126/
-
-### Interview Prep
-- Data Analyst Interview Questions (StrataScratch): https://www.stratascratch.com/interview-questions
-- DataLemur SQL Interview Questions: https://datalemur.com/
-- LeetCode Data Analysis: https://leetcode.com/explore/learn/card/sql-introduction/
-- Kaggle Competitions (practice): https://www.kaggle.com/competitions
-
-### Visualization
-- Matplotlib Gallery: https://matplotlib.org/stable/gallery/index.html
-- Seaborn Tutorial: https://seaborn.pydata.org/tutorial.html
-- Plotly Interactive Charts: https://plotly.com/python/
-
----
-
-## Notion Pages
-
-Create the following pages in your Notion workspace:
-
-### Page 1: Interview Prep Dashboard
-- Title: Data Analyst Interview Prep — 7-Day Sprint
-- Sections: Daily Schedule (checkboxes), Progress Tracker, Notes
-- Template:
-  - Day 1: SQL Fundamentals [ ]
-  - Day 2: SQL Joins & Subqueries [ ]
-  - Day 3: Advanced SQL & Window Functions [ ]
-  - Day 4: SQL Views & Schema Design [ ]
-  - Day 5: Python/Pandas Fundamentals [ ]
-  - Day 6: Pandas Aggregation & Time Series [ ]
-  - Day 7: Visualization & Mock Interview [ ]
-
-### Page 2: SQL Practice Log
-- Columns: Question #, Topic, Difficulty, Attempted (date), Correct (Y/N), Notes
-- Pre-fill rows for Q1–Q8
-
-### Page 3: Python Practice Log
-- Columns: Question #, Topic, Difficulty, Attempted (date), Correct (Y/N), Notes
-- Pre-fill rows for Q9–Q15
-
-### Page 4: Resources & Links
-- Database with columns: Resource Name, URL, Category (SQL/Python/Interview/Viz), Notes
-- Pre-populate with all URLs listed above
-
-### Page 5: Mock Interview Notes
-- Sections: Questions Asked, My Answers, Feedback, Areas to Improve
-- Use for Day 7 mock interview
-
----
-
-## Calendar Events
-
-Create these events in your calendar (Google Calendar / Outlook):
-
-| Day | Time | Event | Details |
-|-----|------|-------|--------|
-| Day 1 | 9:00–11:00 | SQL Fundamentals Study | Read SQLZoo lessons 1–4; complete Q1–Q3 |
-| Day 1 | 14:00–15:00 | SQL Practice Session | LeetCode easy SQL problems (10 questions) |
-| Day 2 | 9:00–11:00 | SQL Joins Study | Read Mode SQL Tutorial joins section; complete Q4, Q6 |
-| Day 2 | 14:00–15:00 | SQL Practice Session | LeetCode medium SQL problems (10 questions) |
-| Day 3 | 9:00–11:00 | Advanced SQL Study | PostgreSQL window functions docs; complete Q5, Q7 |
-| Day 3 | 14:00–15:00 | SQL Practice Session | StrataScratch medium/hard problems |
-| Day 4 | 9:00–10:00 | SQL Views & Schema | Complete Q8; review normalization |
-| Day 4 | 10:00–12:00 | SQL Review & Weak Areas | Revisit any incorrect questions from Days 1–3 |
-| Day 5 | 9:00–11:00 | Pandas Fundamentals | Kaggle Pandas course; complete Q9–Q11 |
-| Day 5 | 14:00–15:00 | Pandas Practice | Kaggle exercises (missing data, strings) |
-| Day 6 | 9:00–11:00 | Pandas Aggregation & Time Series | Complete Q12–Q14 |
-| Day 6 | 14:00–15:00 | Pandas Practice | Kaggle time series exercises |
-| Day 7 | 9:00–10:00 | Visualization | Complete Q15; review matplotlib/seaborn |
-| Day 7 | 10:00–12:00 | Mock Interview | Full mock interview; document in Notion |
-| Day 7 | 14:00–15:00 | Review & Final Prep | Review all notes; prepare questions for interviewers |
-
----
-
-## How to Use This Repository
-
-1. **Clone the repo:** `git clone <repo-url> && cd data-analyst-interview-prep`
-2. **Set up environment:** `pip install pandas matplotlib seaborn numpy`
-3. **Follow the daily schedule** above, completing practice questions each day.
-4. **Run solutions:** `python solutions/sql/0001_select_basic.py` (SQL solutions use SQLite in-memory DB)
-5. **Track progress** in Notion pages and calendar events.
-6. **On Day 7**, run a full mock interview and document everything.
-
-## Directory Structure
+## 🗂️ Repo Structure
 
 ```
-data-analyst-interview-prep/
+.
 ├── README.md
 ├── solutions/
-│   ├── sql/
-│   │   ├── 0001_select_basic.py
-│   │   ├── 0002_second_highest_salary.py
-│   │   ├── 0003_group_by_aggregation.py
-│   │   ├── 0004_inner_join.py
-│   │   ├── 0005_cte_running_total.py
-│   │   ├── 0006_self_join.py
-│   │   ├── 0007_window_moving_avg.py
-│   │   └── 0008_create_view.py
-│   └── pandas/
-│       ├── 0001_sum_even.py
-│       ├── 0002_char_frequency.py
-│       ├── 0003_load_clean_shape.py
-│       ├── 0004_filter_mean.py
-│       ├── 0005_groupby_agg_sort.py
-│       ├── 0006_datetime_resample.py
-│       └── 0007_scatter_trendline.py
+│   ├── 0001_sql_top10_salary.py
+│   ├── 0002_sql_order_status_count.py
+│   ├── 0003_sql_dept_emp_count.py
+│   ├── 0004_sql_employees_no_orders.py
+│   ├── 0005_sql_avg_salary_above.py
+│   ├── 0006_row_number_dept.py
+│   ├── 0007_running_total_sales.py
+│   ├── 0008_sql_date_range.py
+│   ├── 0009_sql_case_when.py
+│   ├── 0010_fill_missing_mean.py
+│   ├── 0011_merge_left.py
+│   ├── 0012_python_groupby.py
+│   ├── 0013_line_plot_sales.py
+│   ├── 0014_python_ab_test.py
+│   └── 0015_python_sql_join.py
+├── notion/
+│   ├── day-01-sql-basics.md
+│   ├── day-02-sql-joins.md
+│   ├── day-03-sql-window-functions.md
+│   ├── day-04-python-pandas-basics.md
+│   ├── day-05-pandas-groupby-merge.md
+│   ├── day-06-visualization-statistics.md
+│   └── day-07-sql-pandas-mock-interview.md
+└── calendar/
+    └── data-analyst-prep.ics
 ```
 
-## Tips for Success
+---
 
-- **Consistency over intensity:** 2–3 focused hours daily beats 8-hour cram sessions.
-- **Explain your thinking:** In interviews, narrate your approach before writing code.
-- **Edge cases matter:** Always consider NULLs, duplicates, and empty results.
-- **Practice under time pressure:** Set a 15-minute timer per question.
-- **Review mistakes:** Revisit incorrect questions the next day.
+## 🚀 How to Run the Solutions
+
+Each solution file is self-contained and runnable:
+
+```bash
+# SQL solutions use in-memory SQLite — no setup needed
+python solutions/0001_sql_top10_salary.py
+
+# Python/Pandas solutions require pandas (and matplotlib for 0013)
+pip install pandas matplotlib numpy
+python solutions/0012_python_groupby.py
+```
+
+---
+
+## 🎯 Interview Tips
+
+1. **SQL**: Practice writing queries without looking at syntax. Focus on joins, window functions, and date handling — these appear in ~80% of DA interviews.
+2. **Python**: Master `groupby`, `merge`, `pivot_table`, and basic data cleaning.
+3. **Statistics**: Know when to use z-test vs t-test, and how to interpret p-values.
+4. **Communication**: Always state your assumptions, walk through your approach, and validate your results.
+
+Good luck! 🍀
