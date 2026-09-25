@@ -1,16 +1,19 @@
 """
-Data Analyst Interview Prep - Pandas Q15
-Scatter Plot with Trendline
+Pandas Q15: Scatter Plot with Trendline
+=========================================
+Objective: Create a scatter plot with a linear regression trendline using Pandas and Matplotlib.
 
-Objective:
-  Given a dataset of advertising spend vs. sales revenue, create a scatter plot
-  with a linear regression trendline, annotate R-squared, and extract key insights.
+This exercise demonstrates:
+- Generating synthetic data with a known relationship
+- Computing linear regression coefficients
+- Creating a scatter plot with a trendline
+- Adding statistical annotations
 
-Skills Tested:
-  - Pandas data manipulation
-  - Matplotlib visualization
-  - Linear regression (numpy/scipy)
-  - Statistical interpretation
+Prerequisites:
+- pandas
+- numpy
+- matplotlib
+- scipy (for linear regression)
 """
 
 import pandas as pd
@@ -19,135 +22,299 @@ import matplotlib.pyplot as plt
 from scipy import stats
 
 
-def generate_sample_data(n=50, seed=42):
-    """Generate realistic ad spend vs sales data with noise."""
-    rng = np.random.default_rng(seed)
-    ad_spend = rng.uniform(1000, 50000, n)
-    # Sales = 2.5 * ad_spend + noise (with slight diminishing returns)
-    sales = 2.5 * ad_spend + rng.normal(0, 5000, n) - 0.00001 * ad_spend**2
-    sales = np.clip(sales, 0, None)
-    return pd.DataFrame({"ad_spend": ad_spend, "sales_revenue": sales})
+def generate_sample_data(n=100, seed=42):
+    """
+    Generate synthetic data with a known linear relationship.
+    
+    Parameters:
+    -----------
+    n : int
+        Number of data points to generate
+    seed : int
+        Random seed for reproducibility
+    
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame with 'x' and 'y' columns
+    """
+    np.random.seed(seed)
+    
+    # Generate x values uniformly distributed between 0 and 100
+    x = np.random.uniform(0, 100, n)
+    
+    # Generate y values with a linear relationship: y = 2.5*x + 10 + noise
+    # This creates a clear trend with some random variation
+    noise = np.random.normal(0, 15, n)
+    y = 2.5 * x + 10 + noise
+    
+    df = pd.DataFrame({'x': x, 'y': y})
+    return df
 
 
-def compute_trendline(df, x_col="ad_spend", y_col="sales_revenue"):
-    """Compute linear regression trendline parameters."""
-    x = df[x_col].values
-    y = df[y_col].values
-    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-    r_squared = r_value ** 2
+def compute_regression(df):
+    """
+    Compute linear regression statistics for the data.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with 'x' and 'y' columns
+    
+    Returns:
+    --------
+    dict
+        Dictionary containing regression statistics
+    """
+    slope, intercept, r_value, p_value, std_err = stats.linregress(df['x'], df['y'])
+    
     return {
-        "slope": slope,
-        "intercept": intercept,
-        "r_squared": r_squared,
-        "p_value": p_value,
-        "std_err": std_err,
+        'slope': slope,
+        'intercept': intercept,
+        'r_squared': r_value ** 2,
+        'p_value': p_value,
+        'std_error': std_err
     }
 
 
-def plot_scatter_trendline(df, x_col="ad_spend", y_col="sales_revenue", title="Ad Spend vs Sales Revenue"):
-    """Create scatter plot with linear regression trendline and annotations."""
-    fig, ax = plt.subplots(figsize=(10, 6))
-
-    # Scatter points
+def create_scatter_with_trendline(df, regression_stats, save_path=None):
+    """
+    Create a scatter plot with a linear regression trendline.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with 'x' and 'y' columns
+    regression_stats : dict
+        Dictionary containing regression statistics
+    save_path : str, optional
+        File path to save the plot. If None, plot is displayed interactively.
+    
+    Returns:
+    --------
+    tuple
+        (fig, ax) matplotlib figure and axes objects
+    """
+    fig, ax = plt.subplots(figsize=(10, 7))
+    
+    # Plot scatter points
     ax.scatter(
-        df[x_col],
-        df[y_col],
+        df['x'], df['y'],
         alpha=0.6,
-        edgecolors="k",
-        linewidths=0.5,
-        s=60,
-        color="steelblue",
-        label="Data Points",
+        color='steelblue',
+        edgecolors='navy',
+        linewidth=0.5,
+        s=50,
+        label='Data Points'
     )
-
-    # Trendline
-    params = compute_trendline(df, x_col, y_col)
-    x_line = np.linspace(df[x_col].min(), df[x_col].max(), 100)
-    y_line = params["slope"] * x_line + params["intercept"]
+    
+    # Generate trendline
+    x_line = np.linspace(df['x'].min(), df['x'].max(), 100)
+    y_line = regression_stats['slope'] * x_line + regression_stats['intercept']
+    
+    # Plot trendline
     ax.plot(
+        x_line, y_line,
+        color='red',
+        linewidth=2.5,
+        label=f'Trendline: y = {regression_stats["slope"]:.2f}x + {regression_stats["intercept"]:.2f}'
+    )
+    
+    # Add confidence interval band
+    x_mean = df['x'].mean()
+    n = len(df)
+    residual_std = np.std(df['y'] - (regression_stats['slope'] * df['x'] + regression_stats['intercept']))
+    
+    # Calculate confidence interval
+    se_pred = residual_std * np.sqrt(1 + 1/n + (x_line - x_mean)**2 / ((df['x'] - x_mean)**2).sum())
+    
+    ax.fill_between(
         x_line,
-        y_line,
-        color="red",
-        linewidth=2,
-        label=f"Trendline (R²={params['r_squared']:.3f})",
+        y_line - 1.96 * se_pred,
+        y_line + 1.96 * se_pred,
+        color='red',
+        alpha=0.15,
+        label='95% Confidence Interval'
     )
-
-    # Confidence band (approximate ±1 std_err)
-    y_upper = y_line + params["std_err"]
-    y_lower = y_line - params["std_err"]
-    ax.fill_between(x_line, y_lower, y_upper, alpha=0.15, color="red", label="±1 Std Error")
-
-    # Annotations
-    ax.set_xlabel("Ad Spend ($)", fontsize=12)
-    ax.set_ylabel("Sales Revenue ($)", fontsize=12)
-    ax.set_title(title, fontsize=14, fontweight="bold")
-    ax.legend(loc="upper left", fontsize=10)
-    ax.grid(True, alpha=0.3)
-
-    # Add equation text box
-    eq_text = (
-        f"y = {params['slope']:.3f}x + {params['intercept']:.1f}\n"
-        f"R² = {params['r_squared']:.4f}  |  p = {params['p_value']:.2e}"
+    
+    # Add statistics annotation
+    stats_text = (
+        f"R² = {regression_stats['r_squared']:.4f}\n"
+        f"Slope = {regression_stats['slope']:.4f}\n"
+        f"Intercept = {regression_stats['intercept']:.4f}\n"
+        f"p-value = {regression_stats['p_value']:.2e}\n"
+        f"Std Error = {regression_stats['std_error']:.4f}"
     )
+    
     ax.text(
-        0.7,
-        0.9,
-        eq_text,
+        0.02, 0.98, stats_text,
         transform=ax.transAxes,
         fontsize=10,
-        verticalalignment="top",
-        bbox=dict(boxstyle="round,pad=0.5", facecolor="wheat", alpha=0.8),
+        verticalalignment='top',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8)
     )
-
+    
+    # Add labels and title
+    ax.set_xlabel('X Variable', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Y Variable', fontsize=12, fontweight='bold')
+    ax.set_title('Scatter Plot with Linear Regression Trendline', fontsize=14, fontweight='bold')
+    
+    # Add grid
+    ax.grid(True, alpha=0.3, linestyle='--')
+    
+    # Add legend
+    ax.legend(loc='upper right', fontsize=10)
+    
+    # Tight layout
     plt.tight_layout()
-    plt.savefig("scatter_trendline.png", dpi=150, bbox_inches="tight")
-    plt.show()
-    return params
-
-
-def extract_insights(df, params):
-    """Generate textual insights from the analysis."""
-    insights = []
-    insights.append(f"Slope: For every $1 increase in ad spend, sales increase by ${params['slope']:.2f}.")
-    insights.append(f"R-squared: {params['r_squared']:.1%} of variance in sales is explained by ad spend.")
-    if params["p_value"] < 0.05:
-        insights.append("The relationship is statistically significant (p < 0.05).")
+    
+    # Save or show
+    if save_path:
+        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        print(f"Plot saved to: {save_path}")
     else:
-        insights.append("The relationship is NOT statistically significant (p >= 0.05).")
-    insights.append(f"Intercept: Baseline sales with zero ad spend = ${params['intercept']:.0f}.")
-    insights.append(f"Standard error of slope: ${params['std_err']:.2f}.")
-    return insights
+        plt.show()
+    
+    return fig, ax
+
+
+def analyze_data_quality(df):
+    """
+    Perform basic data quality analysis.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with 'x' and 'y' columns
+    
+    Returns:
+    --------
+    dict
+        Dictionary containing data quality metrics
+    """
+    analysis = {
+        'total_records': len(df),
+        'missing_values': df.isnull().sum().to_dict(),
+        'x_stats': {
+            'mean': df['x'].mean(),
+            'std': df['x'].std(),
+            'min': df['x'].min(),
+            'max': df['x'].max(),
+            'median': df['x'].median()
+        },
+        'y_stats': {
+            'mean': df['y'].mean(),
+            'std': df['y'].std(),
+            'min': df['y'].min(),
+            'max': df['y'].max(),
+            'median': df['y'].median()
+        },
+        'correlation': df['x'].corr(df['y'])
+    }
+    
+    return analysis
+
+
+def detect_outliers(df, threshold=2.0):
+    """
+    Detect outliers using z-score method.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        DataFrame with 'x' and 'y' columns
+    threshold : float
+        Z-score threshold for outlier detection
+    
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing only outlier records
+    """
+    # Calculate z-scores for y values
+    y_mean = df['y'].mean()
+    y_std = df['y'].std()
+    df['z_score'] = (df['y'] - y_mean) / y_std
+    
+    # Identify outliers
+    outliers = df[df['z_score'].abs() > threshold].copy()
+    
+    return outliers
 
 
 def main():
-    """Run the full exercise: generate data, plot, and report insights."""
+    """
+    Main function to demonstrate the complete workflow.
+    """
     print("=" * 60)
     print("Pandas Q15: Scatter Plot with Trendline")
     print("=" * 60)
-
-    # Generate data
-    df = generate_sample_data()
-    print(f"\nDataset shape: {df.shape}")
-    print(f"Columns: {list(df.columns)}")
+    
+    # Step 1: Generate sample data
+    print("\n[Step 1] Generating sample data...")
+    df = generate_sample_data(n=100, seed=42)
+    print(f"Generated {len(df)} data points")
     print(f"\nFirst 5 rows:\n{df.head()}")
-    print(f"\nDescriptive statistics:\n{df.describe()}")
-
-    # Plot
-    params = plot_scatter_trendline(df)
-
-    # Insights
-    print("\n" + "-" * 60)
-    print("KEY INSIGHTS:")
-    print("-" * 60)
-    for i, insight in enumerate(extract_insights(df, params), 1):
-        print(f"  {i}. {insight}")
-
+    
+    # Step 2: Analyze data quality
+    print("\n[Step 2] Analyzing data quality...")
+    quality_metrics = analyze_data_quality(df)
+    print(f"Total records: {quality_metrics['total_records']}")
+    print(f"Missing values: {quality_metrics['missing_values']}")
+    print(f"Correlation (x, y): {quality_metrics['correlation']:.4f}")
+    print(f"\nX statistics: {quality_metrics['x_stats']}")
+    print(f"Y statistics: {quality_metrics['y_stats']}")
+    
+    # Step 3: Detect outliers
+    print("\n[Step 3] Detecting outliers...")
+    outliers = detect_outliers(df, threshold=2.0)
+    print(f"Found {len(outliers)} outliers (z-score > 2.0)")
+    if len(outliers) > 0:
+        print(f"\nOutlier records:\n{outliers[['x', 'y', 'z_score']]}")
+    
+    # Step 4: Compute regression
+    print("\n[Step 4] Computing linear regression...")
+    regression_stats = compute_regression(df)
+    print(f"Slope: {regression_stats['slope']:.4f}")
+    print(f"Intercept: {regression_stats['intercept']:.4f}")
+    print(f"R²: {regression_stats['r_squared']:.4f}")
+    print(f"p-value: {regression_stats['p_value']:.2e}")
+    print(f"Standard Error: {regression_stats['std_error']:.4f}")
+    
+    # Step 5: Create visualization
+    print("\n[Step 5] Creating scatter plot with trendline...")
+    fig, ax = create_scatter_with_trendline(
+        df, regression_stats,
+        save_path='scatter_trendline.png'
+    )
+    
+    # Step 6: Summary
     print("\n" + "=" * 60)
-    print("Exercise complete. Plot saved as 'scatter_trendline.png'")
+    print("SUMMARY")
     print("=" * 60)
+    print(f"Data points: {len(df)}")
+    print(f"Outliers detected: {len(outliers)}")
+    print(f"Linear relationship strength (R²): {regression_stats['r_squared']:.4f}")
+    print(f"Statistical significance (p < 0.05): {regression_stats['p_value'] < 0.05}")
+    print(f"\nInterpretation:")
+    if regression_stats['r_squared'] > 0.7:
+        print("  Strong linear relationship detected.")
+    elif regression_stats['r_squared'] > 0.4:
+        print("  Moderate linear relationship detected.")
+    else:
+        print("  Weak linear relationship detected.")
+    
+    if regression_stats['p_value'] < 0.05:
+        print("  Relationship is statistically significant.")
+    else:
+        print("  Relationship is NOT statistically significant.")
+    
+    print("\n" + "=" * 60)
+    print("Exercise Complete!")
+    print("=" * 60)
+    
+    return df, regression_stats, outliers
 
-    return df, params
 
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    df, regression_stats, outliers = main()
