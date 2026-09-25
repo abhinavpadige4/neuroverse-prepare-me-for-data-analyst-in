@@ -1,0 +1,88 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//7-Day Sprint//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Data Analyst Interview Prep - 7 Day Sprint
+X-WR-TIMEZONE:UTC
+BEGIN:VTIMEZONE
+TZID:UTC
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0000
+TZNAME:UTC
+END:STANDARD
+END:VTIMEZONE
+
+BEGIN:VEVENT
+UID:day1-sql-basics@data-analyst-prep
+DTSTAMP:20260925T000000Z
+DTSTART:20260925T090000Z
+DTEND:20260925T110000Z
+SUMMARY:Study Day 1: SQL Basics (SELECT, WHERE, ORDER BY, LIMIT)
+DESCRIPTION:Cover SQL SELECT, WHERE, ORDER BY, LIMIT. Solve 2 practice questions (0001, 0002). Resources: SQLBolt SELECT, W3Schools WHERE, Mode Analytics SQL Tutorial.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day2-sql-joins@data-analyst-prep
+DTSTAMP:20260926T000000Z
+DTSTART:20260926T090000Z
+DTEND:20260926T110000Z
+SUMMARY:Study Day 2: SQL Joins & Subqueries
+DESCRIPTION:Cover INNER, LEFT, RIGHT, FULL joins and subqueries. Solve 3 practice questions (0003, 0004, 0005). Resources: SQL Joins Visualizer, Mode Analytics Joins, W3Schools Subqueries.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day3-sql-window@data-analyst-prep
+DTSTAMP:20260927T000000Z
+DTSTART:20260927T090000Z
+DTEND:20260927T110000Z
+SUMMARY:Study Day 3: SQL Window Functions, Dates, CASE WHEN
+DESCRIPTION:Cover ROW_NUMBER, RANK, DENSE_RANK, running totals, BETWEEN, CASE WHEN. Solve 4 practice questions (0006, 0007, 0008, 0009). Resources: Mode Analytics Window Functions, SQLBolt Window Functions, W3Schools CASE.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day4-python-pandas@data-analyst-prep
+DTSTAMP:20260928T000000Z
+DTSTART:20260928T090000Z
+DTEND:20260928T110000Z
+SUMMARY:Study Day 4: Python for Data Analysis (NumPy, Pandas basics)
+DESCRIPTION:Cover NumPy arrays, Pandas Series/DataFrame, missing data handling. Solve 1 practice question (0010). Resources: NumPy Quickstart, Pandas Getting Started, Real Python Pandas.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day5-pandas-groupby@data-analyst-prep
+DTSTAMP:20260929T000000Z
+DTSTART:20260929T090000Z
+DTEND:20260929T110000Z
+SUMMARY:Study Day 5: Pandas GroupBy, Merge, Reshaping
+DESCRIPTION:Cover groupby, agg, merge, concat, pivot_table. Solve 2 practice questions (0011, 0012). Resources: Pandas GroupBy, Pandas Merging, Real Python Merge.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day6-viz-stats@data-analyst-prep
+DTSTAMP:20260930T000000Z
+DTSTART:20260930T090000Z
+DTEND:20260930T110000Z
+SUMMARY:Study Day 6: Data Visualization & Statistics (A/B testing)
+DESCRIPTION:Cover Matplotlib, Seaborn, descriptive stats, two-proportion z-test. Solve 2 practice questions (0013, 0014). Resources: Matplotlib Quickstart, Seaborn Tutorial, Khan Academy A/B Testing.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+BEGIN:VEVENT
+UID:day7-mock-interview@data-analyst-prep
+DTSTAMP:20261001T000000Z
+DTSTART:20261001T090000Z
+DTEND:20261001T110000Z
+SUMMARY:Study Day 7: SQL <-> Pandas Equivalents & Mock Interview
+DESCRIPTION:Review SQL <-> Pandas mapping. Solve 1 practice question (0015). Do a timed mock interview. Resources: Pandas SQL Queries, DataLemur, StrataScratch.
+LOCATION:Home / Study Desk
+END:VEVENT
+
+END:VCALENDAR
