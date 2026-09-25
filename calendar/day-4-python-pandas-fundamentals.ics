@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-4-python-pandas-fundamentals@data-analyst-prep
+DTSTAMP:20260928T000000Z
+DTSTART:20260928T090000Z
+DTEND:20260928T110000Z
+SUMMARY:Study Day 4: Python Pandas Fundamentals
+DESCRIPTION:Cover DataFrames, Series, groupby, merge/join, filtering, and indexing. Solve 2 practice questions.\n\nTopics:\n- DataFrame and Series creation\n- Indexing and slicing\n- groupby() for aggregation\n- merge() and join() for combining DataFrames\n- Filtering and boolean indexing\n\nPractice Problems:\n1. GroupBy Revenue Analysis\n2. Merge Customers with Orders\n\nResources:\n- Pandas User Guide\n- Pandas Cookbook\n- Kaggle Pandas Micro-Course
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 4 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
