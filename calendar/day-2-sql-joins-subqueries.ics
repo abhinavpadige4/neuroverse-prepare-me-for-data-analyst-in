@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Data Analyst Prep//Study Plan//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:day-2-sql-joins-subqueries@data-analyst-prep
+DTSTAMP:20260926T000000Z
+DTSTART:20260926T090000Z
+DTEND:20260926T110000Z
+SUMMARY:Study Day 2: SQL Joins & Subqueries
+DESCRIPTION:Cover SQL joins (INNER, LEFT, RIGHT, FULL) and subqueries. Solve 2 practice questions.\n\nTopics:\n- INNER JOIN: matching rows from both tables\n- LEFT JOIN: all rows from left, matches from right\n- RIGHT JOIN: all rows from right, matches from left\n- FULL OUTER JOIN: all rows from both tables\n- Subqueries and derived tables\n\nPractice Problems:\n1. Department Employee Count (INNER JOIN)\n2. Employees With No Orders (LEFT JOIN + IS NULL)\n\nResources:\n- SQL Joins Visualizer\n- Mode Analytics SQL Joins\n- W3Schools SQL Subqueries
+LOCATION:Study Session
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Study Day 2 starts in 15 minutes
+TRIGGER:-PT15M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
